@@ -19,7 +19,7 @@ def ask_answer(text):
     if not wait_count(r"ASK question", n + 1, 20):
         return False
     end = time.time() + 6
-    while time.time() < end and count_log(r"VOICE listen 4000ms") < count_log(r"ASK question") + 1:
+    while time.time() < end and count_log(r"VOICE listen 5000ms") < count_log(r"ASK question"):
         time.sleep(0.2)
     if text:
         say(text)

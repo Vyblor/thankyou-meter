@@ -23,7 +23,7 @@ enum class Answer { YES, NO, STOP, UNKNOWN }
 object Classifier {
     private val stop = listOf("오늘은 그만", "오늘 그만", "그만 물어", "그만")
     private val no = listOf("아니", "아뇨", "안 받", "못 받", "없어")
-    private val yes = listOf("고마워", "고맙", "감사", "땡큐", "thank", "응", "네", "예", "그래", "맞아", "받았")
+    private val yes = listOf("고마워", "고맙", "감사", "땡큐", "땡스", "땡쓰", "탱큐", "쌩큐", "생큐", "댕큐", "thank", "응", "네", "예", "그래", "맞아", "받았")
 
     /** 소리 원본은 저장하지 않는다. 글자도 분류 뒤 버린다. */
     fun classify(raw: String?, anyYes: Boolean): Answer {
@@ -86,9 +86,10 @@ class Voice(private val ctx: Context) {
                 })
                 s.addListener(object : ResultListener {
                     override fun onUpdated(text: String, isFinal: Boolean) {
-                        log("VOICE stt heard final=$isFinal len=${text.length}")
+                        log("VOICE stt heard final=$isFinal len=${text.length} listening=${onHeard != null}")
                         lastText = text
-                        if (isFinal && started) main.post { finishListen(text) }
+                        // 결과 글자는 듣는 중이면 받는다(에뮬레이터에서는 시작 이벤트가 오지 않을 수 있다)
+                        if (isFinal && onHeard != null) main.post { finishListen(text) }
                     }
                     override fun onUpdatedEpdData(a: Long, b: Long) {}
                     override fun onStartedRecognition() { started = true; log("VOICE stt started") }
@@ -143,7 +144,7 @@ class Voice(private val ctx: Context) {
         // 앞 듣기의 늦은 종료 이벤트가 이번 듣기를 끝내지 않게: 이번 요청의 시작 이벤트를 본 뒤에만 종료를 받는다
         started = false
         try { stt?.request() } catch (e: Throwable) { log("VOICE stt request failed $e") }
-        val r = Runnable { log("VOICE listen window end"); try { stt?.stop() } catch (_: Throwable) {}; main.postDelayed({ finishListen(lastText) }, 600) }
+        val r = Runnable { log("VOICE listen window end"); try { stt?.stop() } catch (_: Throwable) {}; main.postDelayed({ finishListen(lastText) }, 1500) }
         listenTimeout = r
         main.postDelayed(r, windowMs)
     }

@@ -105,6 +105,9 @@ class Detector(private val emit: (Event) -> Unit) {
         if (v != Turn.OFF && prev == Turn.OFF) {
             if (signalOnAt < 0) { signalOnAt = t; signalSide = v; signalSawSteer = false; signalPeak = 0f; signalSpeeds = arrayListOf(speed) }
             signalOffAt = -1
+            // 오래 묵은 조향 사건(긴 커브, 앞서 돌려 둔 핸들)이 이번 차선 변경을 막지 않게: 10초 넘은 사건은 버리고 새로 본다
+            val old = man
+            if (old != null && t - old.start > SIGNAL_GRACE_MS) { man = null; emit(Event.Rejected("stale_reset", t)) }
             man?.let { if (!it.signaled) { it.signaled = true; it.side = v } }
             decel?.bad = true
         } else if (v == Turn.OFF && prev != Turn.OFF) {

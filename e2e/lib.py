@@ -279,9 +279,13 @@ def turn(mode):
     return console("PUT", f"/vehicle/turn-signal?mode={mode}")
 
 
+_cur = {"v": 0}
+
+
 def drive(speed=60, steering=0, brake=0):
     """속도(km/h)와 조향각(도). 콘솔 조향 부호는 앱과 반대다(감지는 부호와 무관)."""
     acc = 0 if brake else 20
+    _cur["v"] = speed
     return console("PUT", f"/vehicle/controls?speed={speed}&accelerator={acc}&brake={brake}&steering={steering}")
 
 
@@ -293,6 +297,10 @@ def ramp(path, step_s=0.5, speed=60):
 
 
 def park():
+    # 실차처럼 서서히 멈춘다(0.5초에 4 km/h). 60→0을 한 번에 보내면 D단 급제동으로 셀 수 있다.
+    v = _cur["v"]
+    while v > 0:
+        v = max(0, v - 4); drive(v, 0); time.sleep(0.5)
     drive(0, 0)
     turn("Off")
     gear("Park")

@@ -20,7 +20,7 @@ def ask_and(answer, n_before):
         return False
     # 듣기 시작을 기다린다
     end = time.time() + 6
-    while time.time() < end and count_log(r"VOICE listen 4000ms") < count_log(r"ASK question"):
+    while time.time() < end and count_log(r"VOICE listen 5000ms") < count_log(r"ASK question"):
         time.sleep(0.2)
     if answer is not None:
         say(answer)
@@ -48,13 +48,13 @@ def run(install_apk=True):
             if p in l and i >= after:
                 return i
         return -1
-    i_lane, i_sched, i_ask = idx("DET lane signaled=true"), idx("ASK scheduled in 6000ms"), idx("ASK question")
+    i_lane, i_sched, i_ask = idx("DET lane signaled=true"), idx("ASK scheduled in 1500ms"), idx("ASK question")
     check("차선 변경 뒤 6초 예약", 0 <= i_lane < i_sched < i_ask)
-    check("띵 → 질문 → 듣기 순서", i_ask < idx("VOICE earcon ASK", i_ask) < idx("VOICE say '양보받았어요?'", i_ask) < idx("VOICE listen 4000ms", i_ask))
+    check("띵 → 질문 → 듣기 순서", i_ask < idx("VOICE earcon ASK", i_ask) < idx("VOICE say '양보받았어요?'", i_ask) < idx("VOICE listen 5000ms", i_ask))
     check("포커스 요청", wait_log(r"VOICE focus result=1", 2) is not None)
     check("예로 분류", last_log(r"ASK answer") and "YES" in last_log(r"ASK answer"))
     check("받은 기록 1", received() == 1, last_log(r"STORE add"))
-    check("기록했어요 + 두 음", wait_log(r"VOICE say '기록했어요'", 3) is not None and wait_log(r"VOICE earcon SAVED", 4) is not None)
+    check("기록했어요 + 두 음", wait_log(r"VOICE say '확인했어요'", 3) is not None and wait_log(r"VOICE earcon SAVED", 4) is not None)
     check("왼쪽 기록", "차선 변경 왼쪽" in (last_log(r"STORE add RECEIVED") or ""))
     time.sleep(2)
 

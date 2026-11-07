@@ -42,7 +42,7 @@ def run(install_apk=True):
     lane_change()
     wait_log(r"ASK question", 20)
     end = time.time() + 6
-    while time.time() < end and count_log(r"VOICE listen 4000ms") < 2:
+    while time.time() < end and count_log(r"VOICE listen 5000ms") < 1:
         time.sleep(0.2)
     say("고마워")
     check("주행 중 받은 기록", wait_log(r"STORE add RECEIVED", 10) is not None)

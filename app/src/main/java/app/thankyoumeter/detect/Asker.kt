@@ -14,15 +14,15 @@ import app.thankyoumeter.voice.Classifier
 import app.thankyoumeter.voice.Earcon
 
 /**
- * 와이어프레임 B3~B5. 깜빡이를 켠 차선 변경이 끝나고 6초 뒤 한 번 묻는다.
- * 띵(150ms) → "양보받았어요?" → 4초 듣기 → 예: "기록했어요" ♪♪ / 아니: 한 음 하강 / 그만: "오늘은 그만 물을게요" / 무응답: 아무 소리 없음.
+ * 와이어프레임 B3~B5. 깜빡이를 켠 차선 변경이 끝나고(직진 3초) 1.5초 뒤 한 번 묻는다(공동창업자 요청 2026-11-07, "너무 늦다").
+ * 띵(150ms) → "양보받았어요?" → 4초 듣기 → 예: "확인했어요" ♪♪ / 아니: 한 음 하강 / 그만: "오늘은 그만 물을게요" / 무응답: 아무 소리 없음.
  * 되묻지 않는다. 간격 180초, 하루 상한(설정), 무응답 3번 연속이면 그날 쉰다.
  */
 class Asker(private val app: TymApp) {
     companion object {
-        const val DELAY_MS = 6000L
+        const val DELAY_MS = 1500L
         const val MIN_GAP_MS = 180_000L
-        const val LISTEN_MS = 4000L
+        const val LISTEN_MS = 5000L
         const val NO_ANSWER_PAUSE = 3
         const val Q = "양보받았어요?"
     }
@@ -88,7 +88,7 @@ class Asker(private val app: TymApp) {
             Answer.YES -> {
                 app.store.add(Kind.RECEIVED, "차선 변경 $side")
                 app.store.updateDay { it.copy(noAnswerRun = 0) }
-                v.speak("기록했어요") { v.earcon(Earcon.SAVED) { end() } }
+                v.speak("확인했어요") { v.earcon(Earcon.SAVED) { end() } }
             }
             Answer.NO -> {
                 app.store.add(Kind.NO, "차선 변경 $side · 아니라고 답함")

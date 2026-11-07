@@ -116,6 +116,14 @@ class DetectorTest {
         assertEquals(false, s.lanes()[0].signaled)
     }
 
+    @Test fun staleSteerDoesNotBlock() {
+        val s = Sim(); s.start()
+        s.steer(12f); s.at(55_000)          // 핸들을 돌린 채 55초(긴 커브)
+        s.steer(0f); s.at(200)
+        laneChange(s, Turn.LEFT)
+        assertEquals(1, s.lanes().count { it.signaled && it.side == Turn.LEFT })
+    }
+
     @Test fun parkNothing() {
         val s = Sim(); s.gear(Gear.P); s.speed(0f)
         s.signal(Turn.LEFT); s.steerPath(8f, 20f, -10f, 0f); s.signal(Turn.OFF); s.at(15_000)

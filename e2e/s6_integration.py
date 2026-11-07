@@ -31,11 +31,11 @@ def run(install_apk=True):
     check("차선 변경 감지", wait_log(r"DET lane signaled=true side=RIGHT", 12) is not None)
     check("질문", wait_log(r"ASK question side=오른쪽", 12) is not None)
     end = time.time() + 6
-    while time.time() < end and count_log(r"VOICE listen 4000ms") < 3:
+    while time.time() < end and count_log(r"VOICE listen 5000ms") < 1:
         time.sleep(0.2)
     say("고마워")
     check("받은 기록", wait_log(r"STORE add RECEIVED .*오른쪽", 8) is not None)
-    check("확인 말", wait_log(r"VOICE say '기록했어요'", 4) is not None)
+    check("확인 말", wait_log(r"VOICE say '확인했어요'", 4) is not None)
     time.sleep(31)
     v = 60
     while v > 38:
