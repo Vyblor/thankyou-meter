@@ -3,6 +3,8 @@ package app.thankyoumeter
 import android.Manifest
 import app.thankyoumeter.detect.DetectService
 import app.thankyoumeter.vehicle.PleosSignals
+import app.thankyoumeter.ui.screens.RecordsScreen
+import app.thankyoumeter.ui.screens.ConfirmScreen
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -80,7 +82,7 @@ class MainActivity : ComponentActivity() {
         permLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.POST_NOTIFICATIONS, "android.car.permission.CAR_SPEED"))
     }
 
-    override fun onResume() { super.onResume(); refreshMic(); (app.signals as? PleosSignals)?.retrySpeed(); if (app.store.settings.value.onboarded) DetectService.start(this) }
+    override fun onResume() { super.onResume(); refreshMic(); (app.signals as? PleosSignals)?.retrySpeed(); app.store.pruneCandidates(); if (app.store.settings.value.onboarded) DetectService.start(this) }
 
     override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); readDebugExtras(intent) }
 
@@ -153,6 +155,8 @@ class MainActivity : ComponentActivity() {
                     onResume = { app.store.updateDay { it.copy(paused = null, noAnswerRun = 0) } },
                     onMicOn = { requestPerms {} })
             }
+            Route.Records -> RecordsScreen(moments, goTab, onDelete = { app.store.delete(it) }, onRestore = { app.store.restore(it) })
+            Route.Confirm -> ConfirmScreen(candidates, goTab, onBack = { go(Route.Home) }, onResolve = { id, gave -> log("CONFIRM id=$id gave=$gave"); app.store.resolve(id, gave) })
             else -> Placeholder(r, goTab)
         }
     }
