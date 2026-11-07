@@ -14,3 +14,5 @@ captures/
 *.jks
 # OS
 .DS_Store
+e2e/out/
+__pycache__/

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- 감지: 방향지시등(CAR_LIGHTS), 조향각·기어(CAR_DRIVE), 속도(AAOS CAR_SPEED) -->
+  <uses-permission android:name="pleos.car.permission.CAR_LIGHTS"/>
+  <uses-permission android:name="pleos.car.permission.CAR_DRIVE"/>
+  <uses-permission android:name="pleos.car.permission.READ_CAR_STEERING"/>
+  <uses-permission android:name="android.car.permission.CAR_SPEED"/>
+  <uses-permission android:name="android.car.permission.CAR_POWERTRAIN"/>
+  <!-- 질문·대답: 온디바이스 TTS·STT -->
+  <uses-permission android:name="pleos.car.permission.STT_SERVICE"/>
+  <uses-permission android:name="pleos.car.permission.TTS_SERVICE"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+  <!-- 주행 중 화면은 시스템이 막는다(distractionOptimized 선언 없음). 주행 중에는 서비스가 소리로만 묻는다. -->
+  <application
+      android:name=".TymApp"
+      android:label="땡큐미터"
+      android:icon="@mipmap/ic_launcher"
+      android:theme="@style/Theme.Tym">
+    <activity
+        android:name=".MainActivity"
+        android:exported="true"
+        android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode"
+        android:launchMode="singleTask">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>
