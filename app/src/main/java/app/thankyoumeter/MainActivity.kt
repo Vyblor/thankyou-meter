@@ -5,6 +5,11 @@ import app.thankyoumeter.detect.DetectService
 import app.thankyoumeter.vehicle.PleosSignals
 import app.thankyoumeter.ui.screens.RecordsScreen
 import app.thankyoumeter.ui.screens.ConfirmScreen
+import app.thankyoumeter.ui.screens.MonthScreen
+import app.thankyoumeter.ui.screens.QrScreen
+import app.thankyoumeter.ui.screens.RegionScreen
+import app.thankyoumeter.ui.screens.MannerScreen
+import app.thankyoumeter.ui.screens.SettingsScreen
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -157,6 +162,24 @@ class MainActivity : ComponentActivity() {
             }
             Route.Records -> RecordsScreen(moments, goTab, onDelete = { app.store.delete(it) }, onRestore = { app.store.restore(it) })
             Route.Confirm -> ConfirmScreen(candidates, goTab, onBack = { go(Route.Home) }, onResolve = { id, gave -> log("CONFIRM id=$id gave=$gave"); app.store.resolve(id, gave) })
+            Route.Month -> MonthScreen(moments, settings.region, goTab, onBack = { go(Route.Home) }, onQr = { go(Route.Qr) })
+            Route.Qr -> {
+                val token = remember { java.util.UUID.randomUUID().toString().take(8) }
+                QrScreen("https://card.thankyou-meter.example/c/$token", goTab, onBack = { go(Route.Month) })
+            }
+            Route.Region -> {
+                val online by app.online.collectAsState()
+                val todayN = moments.count { it.kind != Kind.NO && Store.ymd(it.atMs) == Store.ymd(System.currentTimeMillis()) }
+                val myRecv = moments.count { it.kind == Kind.RECEIVED && Store.ym(it.atMs) == Store.ym(System.currentTimeMillis()) }
+                log("REGION online=$online today=$todayN")
+                RegionScreen(settings.region, myRecv, todayN, online, goTab)
+            }
+            Route.Manner -> { log("MANNER $manner"); MannerScreen(manner, goTab) }
+            Route.Settings -> SettingsScreen(settings, moments.size, goTab, update = { f -> app.store.update(f) },
+                onPreview = { app.voice.earcon(Earcon.ASK) { app.voice.speak("양보받았어요?") {} } },
+                onVoiceTest = { go(Route.Onboard(4)) },
+                onClearAll = { app.store.clearAll(); log("SETTINGS cleared") },
+                onSeed = { app.store.seedDemo() })
             else -> Placeholder(r, goTab)
         }
     }
