@@ -116,7 +116,13 @@ class PleosSignals(private val ctx: Context) : VehicleSignals {
         log("VEH signals registered")
     }
 
+    private var speedDone = false
+
+    /** 속도 권한(CAR_SPEED)은 런타임 권한이다. 권한을 받은 뒤 다시 부르면 등록한다. */
+    fun retrySpeed() { if (!speedDone) setupSpeed() }
+
     private fun setupSpeed() {
+        if (ctx.checkSelfPermission("android.car.permission.CAR_SPEED") != android.content.pm.PackageManager.PERMISSION_GRANTED) { log("VEH speed no permission"); return }
         try {
             val car = Car.createCar(ctx)
             val pm = car.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
@@ -124,12 +130,14 @@ class PleosSignals(private val ctx: Context) : VehicleSignals {
                 override fun onChangeEvent(v: CarPropertyValue<*>) {
                     val ms = (v.value as? Float) ?: return
                     val kmh = ms * 3.6f
+                    if (kotlin.math.abs(kmh - speedKmh.value) >= 1f) log("VEH speed ${"%.0f".format(kmh)}")
                     speedKmh.value = kmh
                     emit(Sig.Speed(kmh, System.currentTimeMillis()))
                 }
                 override fun onErrorEvent(id: Int, zone: Int) { log("VEH speed err $id") }
             }
             val ok = pm.registerCallback(cb, VehiclePropertyIds.PERF_VEHICLE_SPEED, 10f)
+            speedDone = ok
             log("VEH speed register ok=$ok")
         } catch (e: Exception) { log("VEH speed setup failed $e") }
     }

@@ -23,6 +23,9 @@ class TymApp : Application() {
     /** 감지·질문(S2·S3에서 채운다). 서비스가 돌리는 동안만 있다. */
     var brain: app.thankyoumeter.detect.Brain? = null
 
+    /** 서비스가 Brain을 만들 때 부른다(S3에서 질문 흐름을 붙인다). */
+    fun wireBrain(b: app.thankyoumeter.detect.Brain) {}
+
     /** 디버그 빌드 시험 전용 */
     val debugTheme = MutableStateFlow<String?>(null)
     val debugWidthDp = MutableStateFlow(0)
@@ -38,6 +41,7 @@ class TymApp : Application() {
         store = Store(this)
         signals = try { PleosSignals(this).also { it.start() } } catch (t: Throwable) { log("VEH pleos unavailable ($t), using fake"); FakeSignals().also { it.start() } }
         voice = Voice(this).also { it.init(); it.level = store.settings.value.voiceLevel }
+        signals.listen { brain?.onSig(it) }
         watchNetwork()
         if (BuildConfig.DEBUG) registerDebug()
         log("APP start vehicle=${signals.name}")

@@ -1,6 +1,8 @@
 package app.thankyoumeter
 
 import android.Manifest
+import app.thankyoumeter.detect.DetectService
+import app.thankyoumeter.vehicle.PleosSignals
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -66,7 +68,7 @@ class MainActivity : ComponentActivity() {
     private val micGranted = MutableStateFlow(false)
     private var afterPermission: (() -> Unit)? = null
     private val permLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { r ->
-        log("PERM result $r")
+        log("PERM result $r"); (app.signals as? PleosSignals)?.retrySpeed()
         refreshMic()
         afterPermission?.invoke(); afterPermission = null
     }
@@ -75,10 +77,10 @@ class MainActivity : ComponentActivity() {
 
     private fun requestPerms(then: () -> Unit) {
         afterPermission = then
-        permLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.POST_NOTIFICATIONS))
+        permLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.POST_NOTIFICATIONS, "android.car.permission.CAR_SPEED"))
     }
 
-    override fun onResume() { super.onResume(); refreshMic() }
+    override fun onResume() { super.onResume(); refreshMic(); (app.signals as? PleosSignals)?.retrySpeed(); if (app.store.settings.value.onboarded) DetectService.start(this) }
 
     override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); readDebugExtras(intent) }
 
@@ -130,7 +132,7 @@ class MainActivity : ComponentActivity() {
                 listenOnce = { done -> app.voice.listen(4000) { t -> done(Classifier.classify(t, app.store.settings.value.anyYes)) } },
                 stopListen = { app.voice.cancelListen() },
                 onEnableAnyYes = { app.store.update { it.copy(anyYes = true) } },
-                onDone = { app.store.update { it.copy(onboarded = true) }; log("ONBOARD done"); go(Route.Home) },
+                onDone = { app.store.update { it.copy(onboarded = true) }; log("ONBOARD done"); DetectService.start(this@MainActivity); go(Route.Home) },
             )
             Route.Home -> {
                 val today = moments.filter { Store.ymd(it.atMs) == Store.ymd(System.currentTimeMillis()) }

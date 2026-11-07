@@ -44,7 +44,7 @@ def clear():
 
 
 def grant_all():
-    for p in ("android.permission.RECORD_AUDIO", "android.permission.POST_NOTIFICATIONS"):
+    for p in ("android.permission.RECORD_AUDIO", "android.permission.POST_NOTIFICATIONS", "android.car.permission.CAR_SPEED"):
         shell(f"pm grant --user {USER} {PKG} {p}", check=False)
 
 
