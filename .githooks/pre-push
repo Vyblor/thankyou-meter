@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# 푸시 전 익명 검사. 설치: git config core.hooksPath .githooks (이 저장소에만 적용)
+set -euo pipefail
+ZERO=0000000000000000000000000000000000000000
+here="$(git rev-parse --show-toplevel)"
+while read -r lref lsha rref rsha; do
+  [ "$lsha" = "$ZERO" ] && continue            # 브랜치 삭제
+  if [ "$rsha" = "$ZERO" ]; then range="$lsha --not --remotes"; else range="$rsha..$lsha"; fi
+  "$here/tools/check-authors.sh" "$range" >/dev/null || { echo "푸시를 멈췄습니다." >&2; exit 1; }
+done
+exit 0
