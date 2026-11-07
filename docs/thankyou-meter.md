@@ -50,5 +50,9 @@ updated: 2026-11-07
 - 2026-11-07 — 앱 이름 땡큐미터 확정, 익명 설정 점검 통과. 공동창업자 PC에 에뮬레이터 설치(JDK 17, emulator 37.2.13, 이미지 sha1 일치). 신호 실측: Flash도 LEFT/RIGHT로 옴, 조향 ±540도 수신, 100 ms 변화 19회 중 16회 수신(최대값 유지), 속도 m/s. 회전 구분 기준(90도 상한, 되돌림, 30 km/h) 설계 v0.1 → [[thankyou-meter-detection-design]].
 - 2026-11-07 — 디자인 v0.1(테마·컴포넌트 23종·와이어프레임 25장)과 해치 캐릭터 시안 A/B/C를 워크스페이스 `ideas/thankyou-meter-design/`, `ideas/thankyou-meter-mascot/`에 만들었다(공동창업자 지시로 ideas 폴더에만). 구현 시작 때 이 저장소 `docs/design/`으로 옮긴다.
 - 2026-11-07 — "내가 한 양보"를 넣기로 했다(공동창업자 요청). 차는 다른 차를 볼 수 없어(SDK에 레이더·거리 도메인 없음) 직진 중 감속을 후보로 모으고 정차 후 운전자가 고른다. 감지 조건·합격선 → [[thankyou-meter-detection-design]]. 디자인 v0.2(하트 로즈 `#E8365F`/`#FF7A98`, 와이어프레임 27장, 컴포넌트 24종) → [[thankyou-meter-design]].
+- 2026-11-07 — 개발 S1~S6을 마쳤다. 공동창업자 지시: 스프린트별로 개발 → e2e → 버그 수정 → 커밋·푸시하고, 서버 없이 목업 데이터를 기기에만 쌓는다. 단위 시험 11개와 에뮬레이터 e2e 167개 항목이 모두 통과했다(`EXTRACTED`).
+  - 만든 것: 첫 실행, 감지 서비스, 소리 질문, 홈, 기록, 양보 확인, 월간 카드·QR, 동네(목업), 매너, 설정, 예외 화면.
+  - 시험 중 찾은 버그: `CAR_SPEED` 런타임 권한을 요청하지 않음, 감속 시작점 선택, 에뮬레이터 원터치는 OFF를 보내지 않음, 늦은 STT 종료 이벤트.
+  - 다음은 공동창업자 수동 시험 → [[thankyou-meter-sprints]].
 
 *Part of the Hyundai App Dev Challenge wiki. See [[index]] to navigate.*
