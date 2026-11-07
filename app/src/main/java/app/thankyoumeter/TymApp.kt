@@ -1,5 +1,7 @@
 package app.thankyoumeter
 
+import app.thankyoumeter.detect.Asker
+import app.thankyoumeter.detect.Brain
 import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -21,10 +23,14 @@ class TymApp : Application() {
     lateinit var signals: VehicleSignals; private set
     lateinit var voice: Voice; private set
     /** 감지·질문(S2·S3에서 채운다). 서비스가 돌리는 동안만 있다. */
-    var brain: app.thankyoumeter.detect.Brain? = null
+    var brain: Brain? = null
 
     /** 서비스가 Brain을 만들 때 부른다(S3에서 질문 흐름을 붙인다). */
-    fun wireBrain(b: app.thankyoumeter.detect.Brain) {}
+    var asker: Asker? = null
+    fun wireBrain(b: Brain) {
+        val a = asker ?: Asker(this).also { asker = it }
+        b.onAskable = { a.onLaneChange(it) }
+    }
 
     /** 디버그 빌드 시험 전용 */
     val debugTheme = MutableStateFlow<String?>(null)
@@ -70,6 +76,8 @@ class TymApp : Application() {
                 i.getStringExtra("say")?.let { voice.inject(it) }
                 if (i.hasExtra("offline")) debugOffline = i.getBooleanExtra("offline", false)
                 if (i.hasExtra("min_gap_ms")) debugMinGapMs = i.getLongExtra("min_gap_ms", 0)
+                if (i.hasExtra("daily_max")) store.update { it.copy(dailyMax = i.getLongExtra("daily_max", 10).toInt()) }
+                if (i.hasExtra("ask_enabled")) store.update { it.copy(askEnabled = i.getBooleanExtra("ask_enabled", true)) }
                 if (i.hasExtra("theme")) debugTheme.value = i.getStringExtra("theme")?.ifEmpty { null }
                 i.getStringExtra("cmd")?.let { cmd ->
                     log("DEBUG cmd $cmd")

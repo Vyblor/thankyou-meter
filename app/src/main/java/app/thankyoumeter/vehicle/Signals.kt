@@ -132,7 +132,9 @@ class PleosSignals(private val ctx: Context) : VehicleSignals {
                     val kmh = ms * 3.6f
                     if (kotlin.math.abs(kmh - speedKmh.value) >= 1f) log("VEH speed ${"%.0f".format(kmh)}")
                     speedKmh.value = kmh
-                    emit(Sig.Speed(kmh, System.currentTimeMillis()))
+                    // 이벤트가 몰려 도착해도 감속 폭을 바르게 재도록, 신호가 생긴 시각(elapsedRealtimeNanos 기준)을 벽시계로 바꿔 쓴다
+                    val ageMs = ((android.os.SystemClock.elapsedRealtimeNanos() - v.timestamp) / 1_000_000L).coerceIn(0L, 5000L)
+                    emit(Sig.Speed(kmh, System.currentTimeMillis() - ageMs))
                 }
                 override fun onErrorEvent(id: Int, zone: Int) { log("VEH speed err $id") }
             }
