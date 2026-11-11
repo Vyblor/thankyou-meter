@@ -5,7 +5,7 @@ app: thankyou-meter
 status: prd
 owner: cofounder
 created: 2026-11-07
-updated: 2026-11-07
+updated: 2026-11-11
 ---
 
 # thankyou-meter (고마워 운전)
@@ -63,5 +63,11 @@ updated: 2026-11-07
   - 오래된 조향 사건 리셋(버그).
 
   기록이 안 된 원인은 에뮬레이터 맥 마이크 입력이 꺼져 있던 것으로 본다(`INFERRED`). 단위 12개와 e2e 167개가 모두 통과해 커밋 `164b99e`로 푸시했다.
+- 2026-11-11 — 공개 저장소용 `README.md`를 새로 쓰고 출시 APK를 만들었다(창업자: "땡큐미터 readme와 출시 apk 작업을 먼저 해줘") `EXTRACTED`.
+  - README: 한 줄 소개와 기능·안전 설계·SDK 표·시나리오는 기획서 초안 v0.1(워크스페이스 `ideas/thankyou-meter-proposal.md`)과 코드를 대조해 옮겼다. 화면 8장은 2026-11-07 e2e 화면에서 공동창업자가 앱 영역만 자른 것을 1200px로 줄여 `docs/images/`에 넣었다(그 뒤 UI 코드 변경 없음). 예전 README의 팀 설정 안내는 "개발 참여 (팀)" 절로 옮겼다.
+  - 시연 영상: 창업자가 준 완성본 v2(61.6초, 2.5 MB)를 메타데이터를 지워 `docs/media/thankyou-meter-demo.mp4`로 넣고, 질문 장면(15.6~24.0초)과 P단 확인 장면(31.5~41.6초)으로 미리보기 GIF(960px, 10 fps, 18.5초, 0.6 MB)를 만들었다.
+  - 출시 APK `apk/Haechi_ThankYouMeter_release.apk`(19.0 MB, v1.0.0): R8 코드·리소스 축소, 저장소 밖 키로 서명(키가 없으면 디버그 키). `app/proguard-rules.pro`에 Pleos SDK 유지와 Gson 제네릭 정보 유지 규칙을 처음부터 넣었다(카플래시 출시 빌드에서 이것이 없어 차량 기능 조회가 모두 실패했다).
+  - 시험: 단위 12개 통과. 새 `e2e/release_smoke.py` 20항목 모두 통과(설치, 차량 신호·TTS·STT 준비, 차선 변경 감지, TTS 질문과 5초 듣기, 대답 없으면 기록 안 함, 감속 후보, P단 확인, 월간 카드, 매너, 크래시·SDK 실패 로그 없음) `EXTRACTED`. 출시 빌드는 시험 방송이 꺼져 있어 "고마워" 대답 경로는 디버그 e2e(S3·S6)로만 본다.
+  - 미커밋.
 
 *Part of the Hyundai App Dev Challenge wiki. See [[index]] to navigate.*
