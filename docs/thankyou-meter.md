@@ -27,7 +27,7 @@ updated: 2026-11-11
 - 2026-11-07: 공동창업자 PC에 Pleos 에뮬레이터 설치·부팅 완료, 감지 신호 실측. 다음은 감지 시제품 코드. `EXTRACTED`
 
 - 2026-11-07: 저장소만 만들었다(코드 없음). 개발은 공동창업자가 자기 PC에서 진행한다(창업자 지시 "개발은 공동창업자가 진행할거야 그 pc에서"). `EXTRACTED`
-- 저장소는 GitHub `Vyblor/thankyou-meter` 비공개다. 마감 전에 공개로 바꾼다(carflash와 같은 방침). `EXTRACTED`
+- 저장소는 GitHub `Vyblor/thankyou-meter`이고 2026-11-11에 공개로 바꿨다(출시 APK·README·시연 영상 포함). `EXTRACTED`
 - 커밋 신원 규칙과 처음 설정은 README.md "처음 한 번".
 
 ## 다음 행동
@@ -68,6 +68,6 @@ updated: 2026-11-11
   - 시연 영상: 창업자가 준 완성본 v2(61.6초, 2.5 MB)를 메타데이터를 지워 `docs/media/thankyou-meter-demo.mp4`로 넣고, 질문 장면(15.6~24.0초)과 P단 확인 장면(31.5~41.6초)으로 미리보기 GIF(960px, 10 fps, 18.5초, 0.6 MB)를 만들었다.
   - 출시 APK `apk/Haechi_ThankYouMeter_release.apk`(19.0 MB, v1.0.0): R8 코드·리소스 축소, 저장소 밖 키로 서명(키가 없으면 디버그 키). `app/proguard-rules.pro`에 Pleos SDK 유지와 Gson 제네릭 정보 유지 규칙을 처음부터 넣었다(카플래시 출시 빌드에서 이것이 없어 차량 기능 조회가 모두 실패했다).
   - 시험: 단위 12개 통과. 새 `e2e/release_smoke.py` 20항목 모두 통과(설치, 차량 신호·TTS·STT 준비, 차선 변경 감지, TTS 질문과 5초 듣기, 대답 없으면 기록 안 함, 감속 후보, P단 확인, 월간 카드, 매너, 크래시·SDK 실패 로그 없음) `EXTRACTED`. 출시 빌드는 시험 방송이 꺼져 있어 "고마워" 대답 경로는 디버그 e2e(S3·S6)로만 본다.
-  - 미커밋.
+  - 커밋 `6a99c35`(작성자 Haechi, `tools/check-authors.sh` OK)로 push한 뒤 저장소를 **공개**로 바꿨다(창업자: "응응 둘다 진행해줘"). 로그인 없이 README·화면·GIF가 열리고, 받은 APK가 저장소 파일과 SHA-256이 같고, 공개 API의 작성자는 Haechi(noreply)뿐이다 `EXTRACTED`.
 
 *Part of the Hyundai App Dev Challenge wiki. See [[index]] to navigate.*
